@@ -1,29 +1,36 @@
 package za.absa.bookstore.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import java.util.HashSet;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "Customers")
-public class Customer extends AbstractEntity{
+public class Customer extends BookstoreData {
 
-    private String username;
-    private String password;
+    @Column(name = "email_address")
+    private String emailAddress;
+
+    @Column(name = "first_name")
     private String firstName;
-    private String lastName;
-    @OneToMany(mappedBy = "customer")
-    private Set<Order> orders = new HashSet<>();
 
-    @OneToOne(mappedBy = "customer", fetch = FetchType.LAZY, orphanRemoval = true)
-    private Cart cart;
+    @Column(name = "last_name")
+    private String lastName;
+
+    @OneToMany(mappedBy = "customer", orphanRemoval = true)
+    private Set<Order> orders;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Address> address;
+
+    @OneToMany(mappedBy = "customer", orphanRemoval = true)
+    private List<Cart> cart;
 }

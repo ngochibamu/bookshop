@@ -1,30 +1,36 @@
 package za.absa.bookstore.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "Orders")
-public class Order extends AbstractEntity{
+public class Order extends BookstoreData {
 
-    @Column(name = "TOTAL_PRICE")
+    @Column(name = "total_price")
     private BigDecimal totalPrice;
 
-    @Column(name = "ORDER_DATE")
-    private Date orderDate;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
-    private Set<LineItem> lineItems = new HashSet<>();
+    @Column(name = "order_date")
+    private LocalDateTime orderDate;
 
     @ManyToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
+
+    @ManyToMany(mappedBy = "orders", cascade = CascadeType.ALL)
+    private Set<Cart> carts;
+
+    public Order(BigDecimal totalPrice, LocalDateTime orderDate, Customer customer){
+        this.totalPrice = totalPrice;
+        this.orderDate = orderDate;
+        this.customer = customer;
+    }
 }

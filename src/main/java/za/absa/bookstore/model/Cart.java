@@ -1,20 +1,42 @@
 package za.absa.bookstore.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "Carts")
-public class Cart extends AbstractEntity {
+public class Cart extends BookstoreData {
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
+
+    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<LineItem> lineItems = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    private CartStatus cartStatus;
+
+    @ManyToMany
+    @JoinTable(
+            name = "cart_order",
+            joinColumns = { @JoinColumn (name = "cart_id") },
+            inverseJoinColumns = { @JoinColumn (name = "order_id") })
+    private Set<Order> orders;
+
+    public Cart(Customer customer, Set<LineItem> lineItem, CartStatus cartStatus){
+        this.customer = customer;
+        this.lineItems = lineItem;
+        this.cartStatus = cartStatus;
+
+    }
 }

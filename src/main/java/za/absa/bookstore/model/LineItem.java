@@ -1,8 +1,6 @@
 package za.absa.bookstore.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,17 +8,26 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity(name = "OrderLines")
-public class LineItem extends AbstractEntity {
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@Entity(name = "Line_items")
+public class LineItem extends BookstoreData {
 
     private int quantity;
 
     private BigDecimal price;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    private Order order;
-
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "book_id", referencedColumnName = "ID")
+    @OneToOne
+    @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book book;
+
+    @ManyToOne
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    private Cart cart;
+
+    public LineItem(int quantity, BigDecimal price, Book book){
+        this.quantity = quantity;
+        this.price = price;
+        this.book = book;
+    }
 }
