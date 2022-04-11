@@ -26,12 +26,8 @@ public class Cart extends BookstoreData {
     @Enumerated(EnumType.STRING)
     private CartStatus cartStatus;
 
-    @ManyToMany
-    @JoinTable(
-            name = "cart_order",
-            joinColumns = { @JoinColumn (name = "cart_id") },
-            inverseJoinColumns = { @JoinColumn (name = "order_id") })
-    private Set<Order> orders;
+    @OneToOne(mappedBy = "cart")
+    private Order order;
 
     public Cart(Customer customer, Set<LineItem> lineItem, CartStatus cartStatus){
         this.customer = customer;

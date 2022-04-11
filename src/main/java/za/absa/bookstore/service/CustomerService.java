@@ -24,8 +24,9 @@ public class CustomerService {
     }
 
     public Optional<Cart> findCustomerActiveCart(long customerId) {
+
         return Optional.of(customerRepository.existsById(customerId))
-                .map(obj -> cartRepository.findByCartStatus(CartStatus.OPEN))
+                .map(customer -> cartRepository.findByCartStatus(CartStatus.OPEN))
                 .orElseThrow( () -> new BookstoreException("Cannot find customer with Id "+customerId));
     }
 

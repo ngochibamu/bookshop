@@ -5,16 +5,15 @@ import org.springframework.stereotype.Service;
 import za.absa.bookstore.exception.BookstoreException;
 import za.absa.bookstore.model.Cart;
 import za.absa.bookstore.model.CartStatus;
+import za.absa.bookstore.model.Customer;
 import za.absa.bookstore.model.LineItem;
 import za.absa.bookstore.repository.BookRepository;
 import za.absa.bookstore.repository.CartRepository;
-import za.absa.bookstore.repository.CustomerRepository;
 import za.absa.bookstore.service.api.CartService;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
-
 
 @Service
 public class BookCartService implements CartService {
@@ -22,15 +21,15 @@ public class BookCartService implements CartService {
     private final CartRepository cartRepository;
     private final BookRepository bookRepository;
     private final CustomerService customerService;
-    private final CustomerRepository customerRepository;
-
 
     @Autowired
-    public BookCartService(CartRepository cartRepository, BookRepository bookRepository, CustomerService customerService, CustomerRepository customerRepository) {
+    public BookCartService(
+            CartRepository cartRepository,
+            BookRepository bookRepository,
+            CustomerService customerService) {
         this.cartRepository = cartRepository;
         this.bookRepository = bookRepository;
         this.customerService = customerService;
-        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -40,7 +39,9 @@ public class BookCartService implements CartService {
                 (book) -> {
                     LineItem lineItem = new LineItem(quantity,
                             book.getPrice().multiply(BigDecimal.valueOf(quantity)), book);
-                    customerService.findCustomerActiveCart(customerId).ifPresentOrElse(
+                    cartRepository
+                            .findByCustomerAndCartStatus(customerService.getCustomer(customerId), CartStatus.OPEN)
+                            .ifPresentOrElse(
                             (cart) -> {
                                 cart.getLineItems().add(lineItem);
                                 lineItem.setCart(cart);
@@ -57,5 +58,11 @@ public class BookCartService implements CartService {
                 () -> { throw new BookstoreException("Adding To Cart Failed: Unable to find book with Id # "+bookId);
                 }
         );
+    }
+
+    public Cart getCartByCustomerAndCartStatus(long customerId, CartStatus cartStatus){
+        Customer customer = customerService.getCustomer(customerId);
+        return cartRepository.findByCustomerAndCartStatus(customer, cartStatus)
+                .orElseThrow(()-> new BookstoreException("Cannot find cart for customer with customerId "+customerId));
     }
 }

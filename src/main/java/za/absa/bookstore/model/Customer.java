@@ -12,7 +12,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "Customers")
 public class Customer extends BookstoreData {
 
@@ -25,12 +24,15 @@ public class Customer extends BookstoreData {
     @Column(name = "last_name")
     private String lastName;
 
-    @OneToMany(mappedBy = "customer", orphanRemoval = true)
-    private Set<Order> orders;
-
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Address> address;
+    private Set<Address> address;
 
     @OneToMany(mappedBy = "customer", orphanRemoval = true)
-    private List<Cart> cart;
+    private Set<Cart> cart;
+
+    public Customer(String emailAddress, String firstName, String lastName) {
+        this.emailAddress = emailAddress;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }

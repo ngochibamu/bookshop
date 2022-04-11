@@ -7,13 +7,14 @@ import za.absa.bookstore.model.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 public class OrderRepositoryTests {
@@ -55,9 +56,7 @@ public class OrderRepositoryTests {
 
         Customer customer = new Customer("ngoni@vip.net",
                 "ngoni",
-                "chibamu", new HashSet<>(),
-                new ArrayList<>(),
-                null);
+                "chibamu");
 
         Address shippingAddress = new Address(
                 "44 Gucci street",
@@ -81,17 +80,17 @@ public class OrderRepositoryTests {
         );
 
 
-        Collections.addAll(customer.getAddress(), shippingAddress, billingAddress);
+        customer.setAddress(new HashSet<>(List.of(shippingAddress, billingAddress)));
         Customer customerEntity = customerRepository.save(customer);
 
-        Order order = new Order(totalPrice, LocalDateTime.now(), customerEntity);
         LineItem lineItem = new LineItem(2, totalPrice, bookEntity);
         Cart cart = new Cart(customerEntity, new HashSet<>(Collections.singletonList(lineItem)), CartStatus.OPEN);
         lineItem.setCart(cart);
         Cart cartEntity = cartRepository.save(cart);
-
-        order.setCarts(new HashSet<>(Collections.singletonList(cartEntity)));
+        Order order = new Order(cart, totalPrice, LocalDateTime.now(), OrderStatus.PENDING);
+        order.setCart(cartEntity);
         Order orderEntity = orderRepository.save(order);
         assertThat(orderEntity.getId(), is(notNullValue()));
+        assertEquals(cartEntity.getId(), orderEntity.getCart().getId());
     }
 }
