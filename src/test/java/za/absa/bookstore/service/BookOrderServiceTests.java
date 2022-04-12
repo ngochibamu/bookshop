@@ -3,21 +3,19 @@ package za.absa.bookstore.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import za.absa.bookstore.dto.OrderData;
-import za.absa.bookstore.model.Book;
-import za.absa.bookstore.model.Cart;
-import za.absa.bookstore.model.Customer;
 import za.absa.bookstore.model.OrderStatus;
 import za.absa.bookstore.service.api.CartService;
 import za.absa.bookstore.service.api.OrderService;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BookOrderServiceTests {
 
     @Autowired
@@ -35,12 +33,26 @@ public class BookOrderServiceTests {
     @Test
     public void shouldSuccessfullySaveOrder(){
         int bookId = 1, quantity = 1, customerId = 1;
-        Book book = bookService.getBook(bookId);
-        Customer customer = customerService.getCustomer(customerId);
         cartService.addToCart(bookId, quantity, customerId);
 
         orderService.placeOrder(customerId);
-        OrderData orderData = orderService.getOrderForCustomer(customerId, OrderStatus.PENDING);
+        OrderData orderData = orderService.getNewOrderForCustomer(customerId, OrderStatus.PENDING);
         assertThat(orderData, is(notNullValue()));
+        assertThat(orderData.getLineItems().size(), is(1));
+    }
+
+    @Test
+    public void shouldRetriveListOfOrdersForCustomer(){
+        int bookId1 = 1, quantity1 = 1, customerId = 1;
+        int bookId2 = 3, quantity2 = 2;
+        cartService.addToCart(bookId1, quantity1, customerId);
+        orderService.placeOrder(customerId);
+
+        cartService.addToCart(bookId2, quantity2, customerId);
+        orderService.placeOrder(customerId);
+
+        List<OrderData> orders = orderService.getOrdersForCustomer(customerId);
+        assertThat(orders, is(notNullValue()));
+        assertThat(orders, hasSize(2));
     }
 }

@@ -14,6 +14,9 @@ import za.absa.bookstore.service.api.CartService;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookCartService implements CartService {
@@ -60,9 +63,19 @@ public class BookCartService implements CartService {
         );
     }
 
+    @Override
     public Cart getCartByCustomerAndCartStatus(long customerId, CartStatus cartStatus){
         Customer customer = customerService.getCustomer(customerId);
         return cartRepository.findByCustomerAndCartStatus(customer, cartStatus)
                 .orElseThrow(()-> new BookstoreException("Cannot find cart for customer with customerId "+customerId));
+    }
+
+    @Override
+    public List<Cart> getCartsForCustomer(long customerId) {
+        Customer customer = customerService.getCustomer(customerId);
+        return cartRepository.findAllByCustomerAndCartStatus(customer, CartStatus.CLOSED)
+                .stream()
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 }

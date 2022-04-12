@@ -3,8 +3,6 @@ package za.absa.bookstore.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import za.absa.bookstore.dto.BookData;
-import za.absa.bookstore.dto.LineItemData;
 import za.absa.bookstore.dto.OrderData;
 import za.absa.bookstore.model.*;
 import za.absa.bookstore.repository.OrderRepository;
@@ -13,8 +11,8 @@ import za.absa.bookstore.service.api.OrderService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -22,16 +20,16 @@ public class BookOrderService implements OrderService {
 
     private final OrderRepository orderRepository;
     private final CartService cartService;
-    private final CustomerService customerService;
+    private final ServiceHelper serviceHelper;
 
     @Autowired
     public BookOrderService(
             OrderRepository orderRepository,
             CartService cartService,
-            CustomerService customerService) {
+            ServiceHelper serviceHelper) {
         this.orderRepository = orderRepository;
         this.cartService = cartService;
-        this.customerService = customerService;
+        this.serviceHelper = serviceHelper;
     }
 
     @Override
@@ -49,7 +47,7 @@ public class BookOrderService implements OrderService {
     }
 
     @Override
-    public OrderData getOrderForCustomer(long customerId, OrderStatus orderStatus) {
+    public OrderData getNewOrderForCustomer(long customerId, OrderStatus orderStatus) {
 
         Cart cart = cartService.getCartByCustomerAndCartStatus(customerId, CartStatus.CLOSED);
         Order order = cart.getOrder();
@@ -58,32 +56,21 @@ public class BookOrderService implements OrderService {
                 .totalPrice(order.getTotalPrice())
                 .orderDate(order.getOrderDate())
                 .orderStatus(orderStatus)
-                .lineItems(convertToItemData(cart))
+                .lineItems(serviceHelper.convertToItemData(cart))
                 .build();
     }
 
-    private BookData convertBookToBookData(Book book){
-        return BookData.builder()
-                .author(book.getAuthor())
-                .description(book.getDescription())
-                .title(book.getTitle())
-                .ISBN(book.getISBN())
-                .numberOfPages(book.getNumberOfPages())
-                .build();
-    }
-
-    private Set<LineItemData> convertToItemData(Cart cart){
-        Set<LineItemData> itemDataSet = new HashSet<>();
-        cart.getLineItems().forEach(
-                (lineItem) -> {
-                    LineItemData itemData =  LineItemData.builder()
-                            .price(lineItem.getPrice())
-                            .quantity(lineItem.getQuantity())
-                            .bookData(convertBookToBookData(lineItem.getBook()))
-                            .build();
-                    itemDataSet.add(itemData);
-                }
-        );
-        return itemDataSet;
+    @Override
+    public List<OrderData> getOrdersForCustomer(long customerId) {
+        List<OrderData> orders = new ArrayList<>();
+        cartService.getCartsForCustomer(customerId)
+                .forEach( (cart) -> orders.add(OrderData.builder()
+                        .orderId(cart.getOrder().getId())
+                        .totalPrice(cart.getOrder().getTotalPrice())
+                        .orderStatus(cart.getOrder().getOrderStatus())
+                        .orderDate(cart.getOrder().getOrderDate())
+                        .lineItems(serviceHelper.convertToItemData(cart))
+                        .build()));
+        return orders;
     }
 }
