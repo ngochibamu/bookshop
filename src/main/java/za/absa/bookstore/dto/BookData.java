@@ -3,13 +3,13 @@ package za.absa.bookstore.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.persistence.Column;
 import java.math.BigDecimal;
 
 @Getter
 @Builder
 public class BookData {
 
+    private long bookId;
     private String title;
     private String description;
     private String language;

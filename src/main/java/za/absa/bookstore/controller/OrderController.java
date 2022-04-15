@@ -11,6 +11,8 @@ import za.absa.bookstore.service.api.OrderService;
 
 import java.util.List;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
 public class OrderController {
 
@@ -21,13 +23,14 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping(value = "/orderlist")
+    @GetMapping(value = "/orderlist",  produces = APPLICATION_JSON_VALUE)
     public List<OrderData> findBookOrders(long customerId){
         return orderService.getOrdersForCustomer(customerId);
     }
 
-    @PostMapping("/placeOrder")
-    public ResponseEntity<String> placeOrder(){
+    @PostMapping(value = "/placeOrder",  produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> placeOrder(long customerId){
+        orderService.placeOrder(customerId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

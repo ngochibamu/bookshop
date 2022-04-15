@@ -2,7 +2,6 @@ package za.absa.bookstore.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +11,8 @@ import za.absa.bookstore.exception.BookstoreBadRequest;
 import za.absa.bookstore.service.api.CartService;
 
 import java.util.Objects;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 public class CartController {
@@ -23,7 +24,7 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping(value = "/addToCart", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/addToCart", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addToCart(@RequestBody AddToCartRequest addToCartRequest){
 
         if(Objects.isNull(addToCartRequest)){

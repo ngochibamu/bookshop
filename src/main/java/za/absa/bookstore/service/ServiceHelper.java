@@ -16,11 +16,18 @@ public class ServiceHelper {
 
     public BookData convertBookToBookData(Book book){
         return BookData.builder()
+                .bookId(book.getId())
                 .author(book.getAuthor())
                 .description(book.getDescription())
                 .title(book.getTitle())
                 .ISBN(book.getISBN())
                 .numberOfPages(book.getNumberOfPages())
+                .language(book.getLanguage())
+                .price(book.getPrice())
+                .weight(book.getWeight())
+                .dimensions(book.getDimensions())
+                .publisher(book.getPublisher())
+                .imageUrl(book.getImageUrl())
                 .build();
     }
 

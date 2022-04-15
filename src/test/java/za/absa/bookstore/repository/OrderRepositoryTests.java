@@ -51,12 +51,16 @@ public class OrderRepositoryTests {
                 "http://bookstore.ngoni.net/image",
                 "Ngonidzashe Chibamu"
         );
+        book.setCreatedAt(LocalDateTime.now());
+        book.setLastModifiedAt(LocalDateTime.now());
 
         Book bookEntity = bookRepository.save(book);
 
         Customer customer = new Customer("ngoni@vip.net",
                 "ngoni",
                 "chibamu");
+        customer.setCreatedAt(LocalDateTime.now());
+        customer.setLastModifiedAt(LocalDateTime.now());
 
         Address shippingAddress = new Address(
                 "44 Gucci street",
@@ -68,6 +72,8 @@ public class OrderRepositoryTests {
                 "Shipping",
                 customer
         );
+        shippingAddress.setCreatedAt(LocalDateTime.now());
+        shippingAddress.setLastModifiedAt(LocalDateTime.now());
         Address billingAddress = new Address(
                 "44 Gucci street",
                 "Craigavon",
@@ -78,17 +84,24 @@ public class OrderRepositoryTests {
                 "Billing",
                 customer
         );
-
+        billingAddress.setCreatedAt(LocalDateTime.now());
+        billingAddress.setLastModifiedAt(LocalDateTime.now());
 
         customer.setAddress(new HashSet<>(List.of(shippingAddress, billingAddress)));
         Customer customerEntity = customerRepository.save(customer);
 
         LineItem lineItem = new LineItem(2, totalPrice, bookEntity);
+        lineItem.setCreatedAt(LocalDateTime.now());
+        lineItem.setLastModifiedAt(LocalDateTime.now());
         Cart cart = new Cart(customerEntity, new HashSet<>(Collections.singletonList(lineItem)), CartStatus.OPEN);
+        cart.setCreatedAt(LocalDateTime.now());
+        cart.setLastModifiedAt(LocalDateTime.now());
         lineItem.setCart(cart);
         Cart cartEntity = cartRepository.save(cart);
         Order order = new Order(cart, totalPrice, LocalDateTime.now(), OrderStatus.PENDING);
         order.setCart(cartEntity);
+        order.setCreatedAt(LocalDateTime.now());
+        order.setLastModifiedAt(LocalDateTime.now());
         Order orderEntity = orderRepository.save(order);
         assertThat(orderEntity.getId(), is(notNullValue()));
         assertEquals(cartEntity.getId(), orderEntity.getCart().getId());

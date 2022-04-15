@@ -1,10 +1,10 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:proddb
     driverClassName: org.h2.Driver
     username: sa
     password:
-    platform: h2
+    platform: prod
   jpa:
     hibernate:
       show-sql: true
@@ -13,7 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
   h2:
     console:
       enabled: true
@@ -21,8 +21,10 @@ logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: INFO
         type:
           descriptor:
             sql:
-              BasicBinder: TRACE
+              BasicBinder: INFO
+      springframework:
+        security: DEBUG

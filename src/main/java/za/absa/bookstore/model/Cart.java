@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "Carts")
 public class Cart extends BookstoreData {
 
@@ -33,6 +33,5 @@ public class Cart extends BookstoreData {
         this.customer = customer;
         this.lineItems = lineItem;
         this.cartStatus = cartStatus;
-
     }
 }
