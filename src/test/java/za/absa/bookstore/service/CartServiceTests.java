@@ -3,6 +3,7 @@ package za.absa.bookstore.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import za.absa.bookstore.dto.CartData;
 import za.absa.bookstore.model.Cart;
 import za.absa.bookstore.model.CartStatus;
@@ -15,6 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CartServiceTests {
 
     @Autowired
