@@ -56,7 +56,7 @@ public class BookOrderService implements OrderService {
                 .totalPrice(order.getTotalPrice())
                 .orderDate(order.getOrderDate())
                 .orderStatus(orderStatus)
-                .lineItems(serviceHelper.convertToItemData(cart))
+                .lineItems(serviceHelper.LineItemToLineItemData(cart))
                 .build();
     }
 
@@ -69,7 +69,7 @@ public class BookOrderService implements OrderService {
                         .totalPrice(cart.getOrder().getTotalPrice())
                         .orderStatus(cart.getOrder().getOrderStatus())
                         .orderDate(cart.getOrder().getOrderDate())
-                        .lineItems(serviceHelper.convertToItemData(cart))
+                        .lineItems(serviceHelper.LineItemToLineItemData(cart))
                         .build()));
         return orders;
     }

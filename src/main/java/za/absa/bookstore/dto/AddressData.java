@@ -1,12 +1,12 @@
 package za.absa.bookstore.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 public class AddressData {
 
     private String addressLine1;

@@ -24,7 +24,7 @@ public class Customer extends BookstoreData {
     @Column(name = "last_name")
     private String lastName;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Address> address;
 
     @OneToMany(mappedBy = "customer", orphanRemoval = true)

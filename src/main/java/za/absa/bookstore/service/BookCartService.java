@@ -2,6 +2,8 @@ package za.absa.bookstore.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import za.absa.bookstore.dto.CartData;
+import za.absa.bookstore.dto.LineItemData;
 import za.absa.bookstore.exception.BookstoreException;
 import za.absa.bookstore.model.Cart;
 import za.absa.bookstore.model.CartStatus;
@@ -12,10 +14,7 @@ import za.absa.bookstore.repository.CartRepository;
 import za.absa.bookstore.service.api.CartService;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,15 +23,17 @@ public class BookCartService implements CartService {
     private final CartRepository cartRepository;
     private final BookRepository bookRepository;
     private final CustomerService customerService;
+    private final ServiceHelper serviceHelper;
 
     @Autowired
     public BookCartService(
             CartRepository cartRepository,
             BookRepository bookRepository,
-            CustomerService customerService) {
+            CustomerService customerService, ServiceHelper serviceHelper) {
         this.cartRepository = cartRepository;
         this.bookRepository = bookRepository;
         this.customerService = customerService;
+        this.serviceHelper = serviceHelper;
     }
 
     @Override
@@ -77,5 +78,19 @@ public class BookCartService implements CartService {
                 .stream()
                 .map(Optional::get)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CartData getCartData(long customerId) {
+        Cart cart = getCartByCustomerAndCartStatus(customerId, CartStatus.OPEN);
+        Set<LineItemData> booksInCart = serviceHelper.LineItemToLineItemData(cart);
+        return CartData.builder()
+                .lineItems(booksInCart)
+                .totalPrice(booksInCart.stream()
+                        .map(LineItemData::getPrice)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add))
+                .cartStatus(CartStatus.OPEN)
+                .customerData(serviceHelper.customerToCustomerData(cart.getCustomer()))
+                .build();
     }
 }

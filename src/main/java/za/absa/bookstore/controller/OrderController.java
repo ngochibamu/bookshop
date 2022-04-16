@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import za.absa.bookstore.dto.OrderData;
@@ -23,13 +24,13 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping(value = "/orderlist",  produces = APPLICATION_JSON_VALUE)
-    public List<OrderData> findBookOrders(long customerId){
+    @GetMapping(value = "/{customerId}/orderlist",  produces = APPLICATION_JSON_VALUE)
+    public List<OrderData> findBookOrders(@PathVariable long customerId){
         return orderService.getOrdersForCustomer(customerId);
     }
 
-    @PostMapping(value = "/placeOrder",  produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> placeOrder(long customerId){
+    @PostMapping(value = "/{customerId}/placeOrder",  produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> placeOrder(@PathVariable long customerId){
         orderService.placeOrder(customerId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

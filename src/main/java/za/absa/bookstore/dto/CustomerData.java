@@ -1,16 +1,18 @@
 package za.absa.bookstore.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Set;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 public class CustomerData {
 
     private String emailAddress;
     private String firstName;
     private String lastName;
-    private AddressData address;
+    private Set<AddressData> address;
 }
