@@ -9,7 +9,7 @@ Book store Rest API
 
 ## H2 Database console
 H2 database is initialized with a sample of books, customers and addresses. 
-Refer to application-<profile>.yml for settings.
+Refer to application-test.yml and application-prod.yaml for settings.
 
 ## Testing
 Consult OpenAPI (Swagger) documentation for Book store application at 
