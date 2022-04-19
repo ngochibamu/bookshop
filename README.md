@@ -25,7 +25,7 @@ curl -v  http://admin:absa-password@ec2-18-233-200-228.compute-1.amazonaws.com:8
 ```
 #### Add Books To Cart
 ```
-curl -v -X POST http://admin:absa-password@ec2-107-23-96-201.compute-1.amazonaws.com:8080/addToCart -H 'Content-Type: application/json' -d '{"bookId": 3, "quantity": 1, "customerId": 3}'
+curl -v -X POST http://admin:absa-password@ec2-18-233-200-228.compute-1.amazonaws.com:8080/addToCart -H 'Content-Type: application/json' -d '{"bookId": 3, "quantity": 1, "customerId": 3}'
 ```
 #### (Optional) List Cart Contents
 ```
