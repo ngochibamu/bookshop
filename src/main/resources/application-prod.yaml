@@ -27,4 +27,4 @@ logging:
             sql:
               BasicBinder: INFO
       springframework:
-        security: DEBUG
+        security: INFO
