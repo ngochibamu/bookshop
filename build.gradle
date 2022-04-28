@@ -24,6 +24,7 @@ repositories {
 	mavenCentral()
 }
 
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -48,6 +49,12 @@ bootRun {
 
 test {
 	systemProperty 'spring.profiles.active', 'test'
+}
+
+bootJar {
+	archiveBaseName = 'absa-bookstore'
+	archiveVersion = '1.0.0'
+	archiveFileName = 'absa-bookstore.jar'
 }
 
 tasks.named('test') {
