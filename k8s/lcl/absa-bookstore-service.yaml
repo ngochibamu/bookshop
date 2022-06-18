@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: absa-bookstore
+  labels:
+    run: absa-bookstore
+spec:
+  ports:
+    - port:
+  selector:
+    run: absa-bookstore
